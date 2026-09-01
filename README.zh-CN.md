@@ -160,6 +160,132 @@ cursor-ime-hud/
 └── scripts/       # 构建与打包脚本
 ```
 
+## 系统架构与调用链路
+
+### 1. 整体分层架构
+
+本项目采用「**IDE 前端插件 + 独立原生嗅探守护进程**」的分离架构，支持 VS Code / Cursor (TypeScript) 和 JetBrains IDE (Kotlin)，通过标准换行 JSON 协议（stdio IPC）与跨平台 Rust Native Helper 通信：
+
+```mermaid
+graph TB
+    subgraph Host["IDE 前端层 (IDE Plugins)"]
+        subgraph VSCodeExt["VS Code / Cursor 扩展 (TypeScript)"]
+            Entry["extension.ts / Composition.ts<br/>(组合根 / 生命周期控制)"]
+            
+            subgraph ControllerLayer["控制器层 (Controller)"]
+                Controller["HudController<br/>(防抖 / 宽限期 / 状态裁决)"]
+                EditorHost["VSCodeEditorHost<br/>(光标/选区/视口/窗口焦点事件)"]
+            end
+
+            subgraph DetectorLayer["检测器层 (Detector)"]
+                Selector["SampleOrNativeDetector<br/>(回退/重启/调度包装)"]
+                NativeDetector["NativeHelperImeDetector<br/>(进程管理/SHA-256校验/IPC协议)"]
+                SampleDetector["SampleImeDetector<br/>(不可用时的安全回退)"]
+            end
+
+            subgraph PresenterLayer["展现与渲染层 (Renderer & Presenters)"]
+                OverlayRenderer["CursorOverlayRenderer<br/>(光标旁装饰 / 样式缓存)"]
+                PosStrategy["PositionStrategy<br/>(精确行内锚点定位)"]
+                StatusBar["StatusBarPresenter<br/>(状态栏项 / 悬停交互)"]
+            end
+
+            subgraph ServiceLayer["基础服务层 (Services & Model)"]
+                Settings["SettingsService<br/>(配置监听与防抖)"]
+                Logger["LoggerService<br/>(日志与诊断报告)"]
+            end
+        end
+
+        subgraph JetBrainsPlugin["JetBrains 插件 (Kotlin)"]
+            JBAppService["ImeHelperAppService<br/>(Helper 进程与单例)"]
+            JBCaretController["CaretHudController<br/>(光标 HUD 控制器)"]
+            JBRenderer["CaretHudRenderer<br/>(Inlay / Editor 绘制)"]
+            JBStatusBar["ImeStatusBarWidget<br/>(状态栏组件)"]
+        end
+    end
+
+    subgraph NativeHelper["原生系统嗅探层 (Rust Native Helper - ImeWatcher)"]
+        HelperMain["main.rs / protocol.rs<br/>(CLI & 周期探测循环)"]
+        subgraph OSAdapters["各操作系统原生探测适配器 (Platform Probes)"]
+            WinProbe["Windows (TSF / Imm32 / Win32)"]
+            MacProbe["macOS (TIS / Carbon APIs)"]
+            LinuxProbe["Linux (Fcitx5 / IBus / XKB / DBus)"]
+        end
+    end
+
+    %% 连接关系
+    NativeDetector <== "Stdio JSON IPC (换行分隔协议)" ==> HelperMain
+    JBAppService <== "Stdio JSON IPC" ==> HelperMain
+
+    HelperMain --> WinProbe
+    HelperMain --> MacProbe
+    HelperMain --> LinuxProbe
+
+    Entry --> Controller
+    EditorHost -->|"光标/焦点变动事件"| Controller
+    Settings -->|"配置更新"| Controller
+    
+    Selector --> NativeDetector
+    Selector --> SampleDetector
+    NativeDetector -->|"ImeSnapshot"| Selector
+    Selector -->|"ImeSnapshot"| Controller
+    
+    Controller -->|"HudState / OverlayRenderInput"| OverlayRenderer
+    OverlayRenderer --> PosStrategy
+    Controller -->|"StatusBarRenderInput"| StatusBar
+```
+
+### 2. 核心调用链路与时序
+
+从输入法状态切换到光标旁 HUD 与状态栏实时更新的完整生命周期与数据流转过程：
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as 用户 / 系统
+    participant OS as 操作系统 / 输入法
+    participant Helper as Rust ImeWatcher (Native Helper)
+    participant Detector as NativeHelperImeDetector
+    participant Controller as HudController
+    participant Editor as 编辑器 (VS Code / Cursor)
+    participant Overlay as CursorOverlayRenderer
+    participant Status as StatusBarPresenter
+
+    Note over User, Helper: 1. 启动与握手阶段
+    Detector->>Detector: 校验 Helper 的 .sha256 签名文件
+    Detector->>Helper: 启动子进程 (stdio pipe)
+    Helper-->>Detector: 发送握手 {"type":"hello", "protocolVersion":1, ...}
+    Detector->>Controller: 初始化就绪，流式状态就绪
+
+    Note over User, Status: 2. 输入法状态切换调用链路
+    User->>OS: 切换输入法状态 (如 Shift / Ctrl+Space 中英切换)
+    Helper->>OS: 周期探测 / 事件嗅探输入法状态 (TSF/TIS/Fcitx)
+    OS-->>Helper: 返回当前输入上下文 (中 / 英 / 开关状态)
+    Helper-->>Detector: 发送标准 JSON 行 {"type":"state", "state":"cn", "reason":"...", ...}
+    Detector->>Detector: parseSnapshotLine() 解析为不可变 ImeSnapshot
+    Detector->>Controller: 触发 onDidChangeSnapshot(snapshot)
+    
+    rect rgb(240, 245, 255)
+    Note over Controller: 3. 状态裁决与防抖 (单向数据流)
+    Controller->>Controller: resolveHudDisplayState()<br/>- 应用 500ms 宽限期 (防止瞬态 unknown 抖动)<br/>- 生成不可变 HudState
+    Controller->>Controller: 16ms 帧率合并防抖 (requestRender)
+    end
+
+    par 同步更新光标 HUD 与状态栏
+        Controller->>Overlay: render(OverlayRenderInput)
+        Overlay->>Editor: 获取主光标位置 (selection.active)
+        Overlay->>Overlay: PositionStrategy 解析行内锚点与样式
+        Overlay->>Editor: setDecorations() 更新光标旁浮动标签
+    and
+        Controller->>Status: render(StatusBarRenderInput)
+        Status->>Status: 更新状态栏文字 (眼睛图标 + 状态) 与 Tooltip
+    end
+
+    Note over User, Overlay: 4. 光标移动与窗口焦点变动
+    User->>Editor: 移动光标 / 点击换行 / 切换编辑器
+    Editor->>Controller: 触发 onDidChangeTextEditorSelection / ActiveEditor
+    Controller->>Overlay: 重新计算坐标并刷新光标旁 HUD 贴合位置
+```
+
 JetBrains 插件单独说明见 [jetbrains/README.md](jetbrains/README.md)。
 
 ## 本地开发
