@@ -5,6 +5,30 @@
 格式参考 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/)，
 版本号遵循[语义化版本](https://semver.org/lang/zh-CN/spec/v2.0.0.html)。
 
+## [0.2.0](https://github.com/ITSGJY/cursor-ime-hud/compare/v0.1.2...v0.2.0) (2026-09-01)
+
+
+### Features
+
+* **native:** Windows conversion-mode detection with honest confidence degradation ([50a1346](https://github.com/ITSGJY/cursor-ime-hud/commit/50a134603ab6e35d2a312330a4474a70a929709b))
+
+
+### Bug Fixes
+
+* address full-project audit findings ([b21cf2a](https://github.com/ITSGJY/cursor-ime-hud/commit/b21cf2af2d91e9801a8d037fd0cc8e0f2d72b7f9))
+* **ci:** disable default extensions in test runner launchArgs to avoid copilot coverage pollution ([c400dc5](https://github.com/ITSGJY/cursor-ime-hud/commit/c400dc5ff8abaff49ccd62a22341ebc40a19558f))
+* **ci:** exclude built-in copilot extension from c8 coverage report ([feac971](https://github.com/ITSGJY/cursor-ime-hud/commit/feac97123ffd529a65586143620b8a291f802dd5))
+* **ci:** exclude vscode-test directory from c8 coverage report ([d081ea0](https://github.com/ITSGJY/cursor-ime-hud/commit/d081ea0aea99306266a74d061e45ed7b000e384b))
+* **ci:** exclude vscode-test, scripts, and test suite from c8 coverage report ([59f13ec](https://github.com/ITSGJY/cursor-ime-hud/commit/59f13ec7dde2b36dbeed5dbb1a32b98b7a0d7745))
+* **ci:** format docs with prettier and exclude vscode-test from coverage ([8f8dfd0](https://github.com/ITSGJY/cursor-ime-hud/commit/8f8dfd07474ff2cafdf0a81f34f6c159dff0b6e5))
+* **ci:** lock vscode test version and configure c8 coverage filters ([b9e519d](https://github.com/ITSGJY/cursor-ime-hud/commit/b9e519d3a2733ac511020be22bc43852efe86fe7))
+* **jetbrains:** async force-kill on fail paths and atomic waitForExit ([2dbc1c9](https://github.com/ITSGJY/cursor-ime-hud/commit/2dbc1c9b075341119861a0469103a10dc6f6ab95))
+* **jetbrains:** async helper refresh write and atomic hash metadata ([9f63031](https://github.com/ITSGJY/cursor-ime-hud/commit/9f63031081887c78a6b2064da9076907dd4bf14f))
+* **jetbrains:** async helper refresh write and atomic hash metadata ([792b693](https://github.com/ITSGJY/cursor-ime-hud/commit/792b693ce3c63cef29bd7012c9d5fe9c5a5563f1))
+* **jetbrains:** thread-safe snapshot state, app-level helper service, public APIs ([e005d6c](https://github.com/ITSGJY/cursor-ime-hud/commit/e005d6c31b29c0a98fc4d791cd0f7ad10051c7a5))
+* **test:** specify Unit type args for invokePrivate on void helpers ([d253264](https://github.com/ITSGJY/cursor-ime-hud/commit/d253264a6b58a2d971a5990ccc8ea7497d977ac0))
+* wrap UI updates in runWriteAction to prevent EDT threading violation ([8b45195](https://github.com/ITSGJY/cursor-ime-hud/commit/8b451950dbd92cfe384e7064a1aafccf7d642b7c))
+
 ## [0.1.2] - 2026-07-26
 
 - Windows helper 新增 conversion mode 检测：第三方输入法（如微信输入法）内部中英切换现在可以被正确识别并显示。
