@@ -160,6 +160,132 @@ cursor-ime-hud/
 └── scripts/       # Build & packaging scripts
 ```
 
+## Architecture & Call Sequence
+
+### 1. System Architecture
+
+The project adopts a decoupled architecture consisting of **IDE Frontend Plugins** and an **Independent Native Helper Daemon**. It supports both VS Code / Cursor (TypeScript) and JetBrains IDEs (Kotlin), communicating with the cross-platform Rust native helper via a line-delimited JSON IPC protocol over `stdio`:
+
+```mermaid
+graph TB
+    subgraph Host["IDE Host Layer"]
+        subgraph VSCodeExt["VS Code / Cursor Extension (TypeScript)"]
+            Entry["extension.ts / Composition.ts<br/>(Composition Root / Lifecycle)"]
+            
+            subgraph ControllerLayer["Controller Layer"]
+                Controller["HudController<br/>(Debounce / Grace Period / State Resolver)"]
+                EditorHost["VSCodeEditorHost<br/>(Caret / Selection / Focus Events)"]
+            end
+
+            subgraph DetectorLayer["Detector Layer"]
+                Selector["SampleOrNativeDetector<br/>(Fallback & Lifecycle Wrapper)"]
+                NativeDetector["NativeHelperImeDetector<br/>(Process Mgr / SHA-256 / IPC)"]
+                SampleDetector["SampleImeDetector<br/>(Safe Fallback)"]
+            end
+
+            subgraph PresenterLayer["Presenter & Renderer Layer"]
+                OverlayRenderer["CursorOverlayRenderer<br/>(Caret Overlay / Style Cache)"]
+                PosStrategy["PositionStrategy<br/>(Inline Caret Placement)"]
+                StatusBar["StatusBarPresenter<br/>(Status Bar Item & Hover Menu)"]
+            end
+
+            subgraph ServiceLayer["Services & Model Layer"]
+                Settings["SettingsService<br/>(Debounced Config Listener)"]
+                Logger["LoggerService<br/>(Diagnostics & Output Logging)"]
+            end
+        end
+
+        subgraph JetBrainsPlugin["JetBrains Plugin (Kotlin)"]
+            JBAppService["ImeHelperAppService<br/>(Helper Process Singleton)"]
+            JBCaretController["CaretHudController<br/>(Caret HUD Controller)"]
+            JBRenderer["CaretHudRenderer<br/>(Inlay / Editor Painter)"]
+            JBStatusBar["ImeStatusBarWidget<br/>(Status Bar Component)"]
+        end
+    end
+
+    subgraph NativeHelper["Native OS Probe Layer (Rust - ImeWatcher)"]
+        HelperMain["main.rs / protocol.rs<br/>(CLI & Periodic Probe Loop)"]
+        subgraph OSAdapters["Platform Probes"]
+            WinProbe["Windows (TSF / Imm32 / Win32)"]
+            MacProbe["macOS (TIS / Carbon APIs)"]
+            LinuxProbe["Linux (Fcitx5 / IBus / XKB / DBus)"]
+        end
+    end
+
+    %% IPC Connections
+    NativeDetector <== "Stdio JSON IPC (Line-delimited JSON)" ==> HelperMain
+    JBAppService <== "Stdio JSON IPC" ==> HelperMain
+
+    HelperMain --> WinProbe
+    HelperMain --> MacProbe
+    HelperMain --> LinuxProbe
+
+    Entry --> Controller
+    EditorHost -->|"Caret & Focus Events"| Controller
+    Settings -->|"Settings Change"| Controller
+    
+    Selector --> NativeDetector
+    Selector --> SampleDetector
+    NativeDetector -->|"ImeSnapshot"| Selector
+    Selector -->|"ImeSnapshot"| Controller
+    
+    Controller -->|"HudState / OverlayRenderInput"| OverlayRenderer
+    OverlayRenderer --> PosStrategy
+    Controller -->|"StatusBarRenderInput"| StatusBar
+```
+
+### 2. Runtime Call Sequence
+
+End-to-end data flow and rendering lifecycle from an OS-level IME state switch to caret overlay and status bar updates:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User / OS
+    participant OS as Operating System / IME
+    participant Helper as Rust ImeWatcher (Native Helper)
+    participant Detector as NativeHelperImeDetector
+    participant Controller as HudController
+    participant Editor as Editor (VS Code / Cursor)
+    participant Overlay as CursorOverlayRenderer
+    participant Status as StatusBarPresenter
+
+    Note over User, Helper: 1. Startup & Handshake
+    Detector->>Detector: Verify helper .sha256 sidecar
+    Detector->>Helper: Spawn child process (stdio pipe)
+    Helper-->>Detector: Handshake line {"type":"hello", "protocolVersion":1, ...}
+    Detector->>Controller: Initialization ready, event streaming active
+
+    Note over User, Status: 2. IME State Switch Call Sequence
+    User->>OS: Switch IME state (e.g., Shift / Ctrl+Space)
+    Helper->>OS: Periodic probe / event hook for IME status (TSF/TIS/Fcitx)
+    OS-->>Helper: Return current input context (CN / EN / Open state)
+    Helper-->>Detector: Emit line-delimited JSON {"type":"state", "state":"cn", ...}
+    Detector->>Detector: parseSnapshotLine() -> immutable ImeSnapshot
+    Detector->>Controller: Fire onDidChangeSnapshot(snapshot)
+    
+    rect rgb(240, 245, 255)
+    Note over Controller: 3. State Resolution & Debounce
+    Controller->>Controller: resolveHudDisplayState()<br/>- 500ms grace period (prevents transient unknown flicker)<br/>- Generate immutable HudState
+    Controller->>Controller: 16ms frame debounce (requestRender)
+    end
+
+    par Concurrent Caret & Status Bar Update
+        Controller->>Overlay: render(OverlayRenderInput)
+        Overlay->>Editor: Query primary caret (selection.active)
+        Overlay->>Overlay: PositionStrategy computes inline placement & style
+        Overlay->>Editor: setDecorations() updates caret overlay tag
+    and
+        Controller->>Status: render(StatusBarRenderInput)
+        Status->>Status: Update status bar text (eye icon + label) & tooltip
+    end
+
+    Note over User, Overlay: 4. Caret Movement & Focus Change
+    User->>Editor: Move caret / line break / switch editor
+    Editor->>Controller: Trigger onDidChangeTextEditorSelection / ActiveEditor
+    Controller->>Overlay: Recalculate position & re-anchor caret HUD
+```
+
 JetBrains-specific notes: [jetbrains/README.md](jetbrains/README.md).
 
 - [SignPath Code Signing Policy](docs/SIGNPATH_CODE_SIGNING_POLICY.md)
