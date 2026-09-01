@@ -171,7 +171,7 @@ graph TB
     subgraph Host["IDE 前端层 (IDE Plugins)"]
         subgraph VSCodeExt["VS Code / Cursor 扩展 (TypeScript)"]
             Entry["extension.ts / Composition.ts<br/>(组合根 / 生命周期控制)"]
-            
+
             subgraph ControllerLayer["控制器层 (Controller)"]
                 Controller["HudController<br/>(防抖 / 宽限期 / 状态裁决)"]
                 EditorHost["VSCodeEditorHost<br/>(光标/选区/视口/窗口焦点事件)"]
@@ -223,12 +223,12 @@ graph TB
     Entry --> Controller
     EditorHost -->|"光标/焦点变动事件"| Controller
     Settings -->|"配置更新"| Controller
-    
+
     Selector --> NativeDetector
     Selector --> SampleDetector
     NativeDetector -->|"ImeSnapshot"| Selector
     Selector -->|"ImeSnapshot"| Controller
-    
+
     Controller -->|"HudState / OverlayRenderInput"| OverlayRenderer
     OverlayRenderer --> PosStrategy
     Controller -->|"StatusBarRenderInput"| StatusBar
@@ -263,7 +263,7 @@ sequenceDiagram
     Helper-->>Detector: 发送标准 JSON 行 {"type":"state", "state":"cn", "reason":"...", ...}
     Detector->>Detector: parseSnapshotLine() 解析为不可变 ImeSnapshot
     Detector->>Controller: 触发 onDidChangeSnapshot(snapshot)
-    
+
     rect rgb(240, 245, 255)
     Note over Controller: 3. 状态裁决与防抖 (单向数据流)
     Controller->>Controller: resolveHudDisplayState()<br/>- 应用 500ms 宽限期 (防止瞬态 unknown 抖动)<br/>- 生成不可变 HudState

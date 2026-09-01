@@ -211,7 +211,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "coverage": "c8 --check-coverage --lines 80 --functions 85 --branches 75 --statements 80 --reporter=text --reporter=lcov --reporter=json-summary npm run test:extension && node ./scripts/check-core-coverage.js",
+    "coverage": "c8 --src src --include 'src/**/*.ts' --exclude 'src/test/**' --exclude '.vscode-test/**' --check-coverage --lines 80 --functions 85 --branches 75 --statements 80 --reporter=text --reporter=lcov --reporter=json-summary npm run test:extension && node ./scripts/check-core-coverage.js",
     "vscode:prepublish": "node ./scripts/check-publisher.js && node ./scripts/verify-helper-resources.js --all && npm run compile",
     "package:vsix": "node ./scripts/verify-helper-resources.js --all && npx @vscode/vsce package",
     "package:vsix:target": "node ./scripts/package-vsix.js",

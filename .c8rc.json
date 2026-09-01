@@ -1,0 +1,6 @@
+{
+  "src": "src",
+  "include": ["src/**/*.ts"],
+  "exclude": ["src/test/**", "**/*.test.ts", ".vscode-test/**", "scripts/**", "out/**"],
+  "extension": [".ts"]
+}

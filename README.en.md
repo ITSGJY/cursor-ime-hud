@@ -171,7 +171,7 @@ graph TB
     subgraph Host["IDE Host Layer"]
         subgraph VSCodeExt["VS Code / Cursor Extension (TypeScript)"]
             Entry["extension.ts / Composition.ts<br/>(Composition Root / Lifecycle)"]
-            
+
             subgraph ControllerLayer["Controller Layer"]
                 Controller["HudController<br/>(Debounce / Grace Period / State Resolver)"]
                 EditorHost["VSCodeEditorHost<br/>(Caret / Selection / Focus Events)"]
@@ -223,12 +223,12 @@ graph TB
     Entry --> Controller
     EditorHost -->|"Caret & Focus Events"| Controller
     Settings -->|"Settings Change"| Controller
-    
+
     Selector --> NativeDetector
     Selector --> SampleDetector
     NativeDetector -->|"ImeSnapshot"| Selector
     Selector -->|"ImeSnapshot"| Controller
-    
+
     Controller -->|"HudState / OverlayRenderInput"| OverlayRenderer
     OverlayRenderer --> PosStrategy
     Controller -->|"StatusBarRenderInput"| StatusBar
@@ -263,7 +263,7 @@ sequenceDiagram
     Helper-->>Detector: Emit line-delimited JSON {"type":"state", "state":"cn", ...}
     Detector->>Detector: parseSnapshotLine() -> immutable ImeSnapshot
     Detector->>Controller: Fire onDidChangeSnapshot(snapshot)
-    
+
     rect rgb(240, 245, 255)
     Note over Controller: 3. State Resolution & Debounce
     Controller->>Controller: resolveHudDisplayState()<br/>- 500ms grace period (prevents transient unknown flicker)<br/>- Generate immutable HudState
