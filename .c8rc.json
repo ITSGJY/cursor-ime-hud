@@ -1,6 +1,13 @@
 {
-  "src": "src",
   "include": ["src/**/*.ts"],
-  "exclude": ["src/test/**", "**/*.test.ts", ".vscode-test/**", "scripts/**", "out/**"],
-  "extension": [".ts"]
+  "exclude": [
+    "src/test/**",
+    "**/*.test.ts",
+    "**/.vscode-test/**",
+    "**/scripts/**",
+    "**/out/**",
+    "**/node_modules/**"
+  ],
+  "extension": [".ts"],
+  "exclude-after-remap": true
 }

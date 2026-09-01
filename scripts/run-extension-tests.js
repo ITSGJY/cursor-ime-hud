@@ -29,6 +29,7 @@ async function main() {
 
   try {
     await runTests({
+      version: process.env.VSCODE_VERSION || "1.107.0",
       extensionDevelopmentPath,
       extensionTestsPath,
       vscodeExecutablePath: process.env.VSCODE_EXECUTABLE_PATH || process.env.VSCODE_CLI,
@@ -37,7 +38,6 @@ async function main() {
         "--skip-welcome",
         "--skip-release-notes",
         "--disable-workspace-trust",
-        "--disable-extensions",
         extensionDevelopmentPath
       ]
     });
