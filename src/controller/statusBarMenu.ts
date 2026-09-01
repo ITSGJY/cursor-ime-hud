@@ -5,10 +5,7 @@
 import { CursorImeHudSettings } from "../model/types";
 
 export type StatusBarMenuAction =
-  | "toggleOverlay"
-  | "refreshImeState"
-  | "showDiagnostics"
-  | "openSettingsMenu";
+  "toggleOverlay" | "refreshImeState" | "showDiagnostics" | "openSettingsMenu";
 
 export interface StatusBarMenuItem {
   label: string;

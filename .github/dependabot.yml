@@ -7,6 +7,11 @@ updates:
       interval: "weekly"
       day: "monday"
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "@types/vscode"
+        update-types: ["version-update:semver-minor", "version-update:semver-major"]
     groups:
       production-dependencies:
         dependency-type: "production"

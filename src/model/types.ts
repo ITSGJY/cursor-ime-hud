@@ -112,12 +112,7 @@ export interface ImeDetectorDebugInfo {
   helperSha256Path?: string;
   helperSha256PathExists?: boolean;
   helperHashStatus?:
-    | "not-checked"
-    | "missing-sidecar"
-    | "invalid-sidecar"
-    | "match"
-    | "mismatch"
-    | "error";
+    "not-checked" | "missing-sidecar" | "invalid-sidecar" | "match" | "mismatch" | "error";
   helperProtocolVersion?: number;
   usingFallback: boolean;
   fallbackReason?: string;
