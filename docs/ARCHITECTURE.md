@@ -118,6 +118,6 @@ Rules:
 
 - **Unit tests** live under `src/test/` and target the `model/`, `detector/`, `controller/`, and `services/` layers. They run cross-platform on Node.js 24. The suite runner (`src/test/suite/index.ts`) discovers every compiled `*.test.js` file automatically, so new test files need no registration.
 - **Helper smoke tests** exercise the protocol against helpers that can run on the current runner with `--once`. Cross-compiled targets such as Linux ARM helpers built on an x64 runner are built and packaged, while execution smoke tests are skipped by `scripts/assert-helper-once.js` because the binary cannot run on the host CPU.
-- **Manual verification** is described in `README.md#从源码开发`.
+- **Manual verification** is described in `../README.md#本地开发`.
 
 See `CONTRIBUTING.md#how-to-run-a-single-test` for running individual files or `describe` blocks.

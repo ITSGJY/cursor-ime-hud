@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resources/icon.png" alt="Cursor IME HUD" width="96" height="96">
+  <img src="../resources/icon.png" alt="Cursor IME HUD" width="96" height="96">
 </p>
 
 <h1 align="center">Cursor IME HUD</h1>
@@ -13,7 +13,7 @@
   <a href="https://github.com/GJYNBB/cursor-ime-hud/releases"><img src="https://img.shields.io/github/v/release/GJYNBB/cursor-ime-hud?label=release" alt="Release"></a>
   <a href="https://code.visualstudio.com/"><img src="https://img.shields.io/badge/VS%20Code-%5E1.107.0-007ACC" alt="VS Code"></a>
   <a href="https://www.jetbrains.com/"><img src="https://img.shields.io/badge/JetBrains-2026.1%2B-000000" alt="JetBrains"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 </p>
 
 <p align="center">
@@ -32,11 +32,11 @@
   <tr>
     <td align="center" width="50%">
       <strong>VS Code / Cursor</strong><br>
-      <img src="resources/screenshots/vscode-demo.gif" alt="VS Code / Cursor 端演示" width="100%">
+      <img src="../resources/screenshots/vscode-demo.gif" alt="VS Code / Cursor 端演示" width="100%">
     </td>
     <td align="center" width="50%">
       <strong>JetBrains</strong><br>
-      <img src="resources/screenshots/jetbrains-demo.gif" alt="JetBrains 端演示" width="100%">
+      <img src="../resources/screenshots/jetbrains-demo.gif" alt="JetBrains 端演示" width="100%">
     </td>
   </tr>
 </table>
@@ -144,8 +144,8 @@ cursor --install-extension ./cursor-ime-hud-<version>-win32-x64.vsix
 
 协议与生命周期说明：
 
-- [docs/helper-protocol.md](docs/helper-protocol.md)
-- [docs/helper-lifecycle.md](docs/helper-lifecycle.md)
+- [helper-protocol.md](helper-protocol.md)
+- [helper-lifecycle.md](helper-lifecycle.md)
 - [SECURITY.md](SECURITY.md)
 
 ## 仓库结构
@@ -286,7 +286,7 @@ sequenceDiagram
     Controller->>Overlay: 重新计算坐标并刷新光标旁 HUD 贴合位置
 ```
 
-JetBrains 插件单独说明见 [jetbrains/README.md](jetbrains/README.md)。
+JetBrains 插件单独说明见 [../jetbrains/README.md](../jetbrains/README.md)。
 
 ## 本地开发
 
@@ -323,10 +323,10 @@ npm run package:vsix:target -- --target win32-x64 --out-dir dist/vsix
 | helper 启动失败 | 确认安装的是与本机架构匹配的官方包；不要单独替换 helper 或 `.sha256`              |
 | Linux 检测异常  | 确认会话中可用 Fcitx / IBus / XKB 等后端；诊断信息中会标明当前后端                |
 
-各输入法在各平台上「能检测什么、检测不了什么」及对应置信度，见 [docs/ime-compatibility.md](docs/ime-compatibility.md)。
+各输入法在各平台上「能检测什么、检测不了什么」及对应置信度，见 [ime-compatibility.md](ime-compatibility.md)。
 
 提交 issue 时请附上：IDE 版本、系统与架构、输入法名称、诊断输出（可打码路径），以及是否可稳定复现。
 
 ## 许可证
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

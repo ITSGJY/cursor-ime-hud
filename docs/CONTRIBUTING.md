@@ -93,10 +93,10 @@ JetBrains 可按 Gradle 测试名筛选：
 完整数据流见 [`ARCHITECTURE.md`](ARCHITECTURE.md) 中的 data flow 和 helper IPC 章节。简要流程如下：
 
 1. 实现 `src/detector/ImeDetector.ts` 中的 `ImeDetector`，返回 `ImeSnapshot`；探测器中不要调用 VS Code UI API。
-2. 如果探测器封装子进程，请在 `src/detector/helperProtocol.ts`（或同级文件）定义协议，并在 [`docs/helper-protocol.md`](docs/helper-protocol.md) 记录线格式。
+2. 如果探测器封装子进程，请在 `src/detector/helperProtocol.ts`（或同级文件）定义协议，并在 [`helper-protocol.md`](helper-protocol.md) 记录线格式。
 3. 将探测器接入 `SampleOrNativeDetector`。
 4. 为解析、错误和超时路径添加单元测试。
-5. 同步更新 [`docs/helper-protocol.md`](docs/helper-protocol.md) 和 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
+5. 同步更新 [`helper-protocol.md`](helper-protocol.md) 和 [`ARCHITECTURE.md`](ARCHITECTURE.md)。
 
 ## 报告问题
 

@@ -54,7 +54,7 @@ module.exports = [
       "no-var": "error"
     }
   },
-  // Layer gates. Encodes the dependency rules from ARCHITECTURE.md as
+  // Layer gates. Encodes the dependency rules from docs/ARCHITECTURE.md as
   // per-directory `no-restricted-imports` blocks: lower layers must not
   // import from higher layers, and `contracts/` may not import any
   // implementation layer. Test code (`src/test/**`) is intentionally

@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="resources/icon.png" alt="Cursor IME HUD" width="96" height="96">
+  <img src="../resources/icon.png" alt="Cursor IME HUD" width="96" height="96">
 </p>
 
 <h1 align="center">Cursor IME HUD</h1>
@@ -13,11 +13,11 @@
   <a href="https://github.com/GJYNBB/cursor-ime-hud/releases"><img src="https://img.shields.io/github/v/release/GJYNBB/cursor-ime-hud?label=release" alt="Release"></a>
   <a href="https://code.visualstudio.com/"><img src="https://img.shields.io/badge/VS%20Code-%5E1.107.0-007ACC" alt="VS Code"></a>
   <a href="https://www.jetbrains.com/"><img src="https://img.shields.io/badge/JetBrains-2026.1%2B-000000" alt="JetBrains"></a>
-  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
+  <a href="../LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License"></a>
 </p>
 
 <p align="center">
-  <a href="README.md">简体中文</a> · English
+  <a href="../README.md">简体中文</a> · English
 </p>
 
 ---
@@ -32,11 +32,11 @@ You mean to type English. A string of pinyin appears instead.
   <tr>
     <td align="center" width="50%">
       <strong>VS Code / Cursor</strong><br>
-      <img src="resources/screenshots/vscode-demo.gif" alt="VS Code / Cursor demo" width="100%">
+      <img src="../resources/screenshots/vscode-demo.gif" alt="VS Code / Cursor demo" width="100%">
     </td>
     <td align="center" width="50%">
       <strong>JetBrains</strong><br>
-      <img src="resources/screenshots/jetbrains-demo.gif" alt="JetBrains demo" width="100%">
+      <img src="../resources/screenshots/jetbrains-demo.gif" alt="JetBrains demo" width="100%">
     </td>
   </tr>
 </table>
@@ -144,8 +144,8 @@ This project only needs to know _Chinese or English_ — never _what you typed_.
 
 Details:
 
-- [docs/helper-protocol.md](docs/helper-protocol.md)
-- [docs/helper-lifecycle.md](docs/helper-lifecycle.md)
+- [helper-protocol.md](helper-protocol.md)
+- [helper-lifecycle.md](helper-lifecycle.md)
 - [SECURITY.md](SECURITY.md)
 
 ## Repository layout
@@ -286,9 +286,9 @@ sequenceDiagram
     Controller->>Overlay: Recalculate position & re-anchor caret HUD
 ```
 
-JetBrains-specific notes: [jetbrains/README.md](jetbrains/README.md).
+JetBrains-specific notes: [../jetbrains/README.md](../jetbrains/README.md).
 
-- [SignPath Code Signing Policy](docs/SIGNPATH_CODE_SIGNING_POLICY.md)
+- [SignPath Code Signing Policy](SIGNPATH_CODE_SIGNING_POLICY.md)
 
 ## Development
 
@@ -321,10 +321,10 @@ Contribution guide and architecture:
 | Helper fails to start   | Install the official package for your arch; do not replace the helper or `.sha256` by hand        |
 | Linux detection issues  | Ensure Fcitx / IBus / XKB (etc.) is available in the session; diagnostics show the active backend |
 
-See [docs/ime-compatibility.md](docs/ime-compatibility.md) (Chinese) for what each IME/platform combination can and cannot detect, and the confidence attached to each signal.
+See [ime-compatibility.md](ime-compatibility.md) (Chinese) for what each IME/platform combination can and cannot detect, and the confidence attached to each signal.
 
 When filing an issue, include IDE version, OS/arch, IME name, diagnostics (paths redacted), and whether it reproduces reliably.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](../LICENSE)

@@ -17,7 +17,7 @@
 </p>
 
 <p align="center">
-  <a href="README.en.md">English</a> · 简体中文
+  <a href="docs/README.en.md">English</a> · 简体中文
 </p>
 
 ---
@@ -146,7 +146,7 @@ cursor --install-extension ./cursor-ime-hud-<version>-win32-x64.vsix
 
 - [docs/helper-protocol.md](docs/helper-protocol.md)
 - [docs/helper-lifecycle.md](docs/helper-lifecycle.md)
-- [SECURITY.md](SECURITY.md)
+- [docs/SECURITY.md](docs/SECURITY.md)
 
 ## 仓库结构
 
@@ -313,8 +313,8 @@ npm run package:vsix:target -- --target win32-x64 --out-dir dist/vsix
 
 完整贡献流程、PR 约定与架构说明：
 
-- [CONTRIBUTING.md](CONTRIBUTING.md)
-- [ARCHITECTURE.md](ARCHITECTURE.md)
+- [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 
 ## 故障排查
 

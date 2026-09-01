@@ -13,7 +13,7 @@ Cursor IME HUD 当前支持：
 - 随包提供以下平台的 Rust native helper：`win-x64`、`win-arm64`、`darwin-x64`、`darwin-arm64`、`linux-x64` 和 `linux-arm64`
 - 识别中文输入法 / 输入源；后端无法可靠判断时使用 `unknown`
 
-macOS 通过公开的输入源 API 进行检测。Linux 检测依赖桌面环境中可用的 Fcitx / Fcitx5、IBus 或键盘布局回退机制。其中 IBus 路径仅报告静态的输入法引擎名称：引擎内部的中 / 英子模式切换对外不可见，HUD 无法跟随该切换更新。当前版本不能准确识别日语、韩语及其他非中文输入法。各平台输入法的详细兼容情况见 [docs/ime-compatibility.md](docs/ime-compatibility.md)。
+macOS 通过公开的输入源 API 进行检测。Linux 检测依赖桌面环境中可用的 Fcitx / Fcitx5、IBus 或键盘布局回退机制。其中 IBus 路径仅报告静态的输入法引擎名称：引擎内部的中 / 英子模式切换对外不可见，HUD 无法跟随该切换更新。当前版本不能准确识别日语、韩语及其他非中文输入法。各平台输入法的详细兼容情况见 [ime-compatibility.md](ime-compatibility.md)。
 
 以上支持范围适用于当前随包提供的 Rust native helper。早期 classic / .NET helper 软件包仅作为历史版本保留，不属于当前支持的实现。
 
@@ -44,7 +44,7 @@ JetBrains 插件目前处于维护模式：
 - 提出功能建议，请使用 GitHub 功能建议模板。
 - 报告安全问题，请遵循 [SECURITY.md](SECURITY.md)，不要在公开 issue 中发布漏洞利用细节。
 
-提交 issue 前，请先查看 [README.md](README.md) 或 [README.en.md](README.en.md) 中的故障排查章节。
+提交 issue 前，请先查看 [../README.md](../README.md) 或 [README.en.md](README.en.md) 中的故障排查章节。
 
 ## 需要提供的信息
 

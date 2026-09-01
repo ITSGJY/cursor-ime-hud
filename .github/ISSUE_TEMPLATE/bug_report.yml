@@ -8,7 +8,7 @@ body:
       value: |
         感谢你报告问题。请先运行 **Cursor IME HUD：显示诊断信息（Show Diagnostics）**，并填写下面的环境信息。
 
-        如果涉及安全问题，请不要公开发布漏洞利用细节，改为遵循 [SECURITY.md](../../SECURITY.md) 中的流程。
+        如果涉及安全问题，请不要公开发布漏洞利用细节，改为遵循 [SECURITY.md](../../docs/SECURITY.md) 中的流程。
   - type: dropdown
     id: app
     attributes:

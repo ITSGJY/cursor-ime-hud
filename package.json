@@ -34,18 +34,9 @@
     "resources/screenshots/**/*",
     "package.nls*.json",
     "README.md",
-    "README.en.md",
-    "README.zh-CN.md",
     "CHANGELOG.md",
     "LICENSE",
-    "ARCHITECTURE.md",
-    "CONTRIBUTING.md",
-    "docs/helper-protocol.md",
-    "docs/helper-lifecycle.md",
-    "docs/helper-protocol-vectors.json",
-    "SECURITY.md",
-    "SUPPORT.md",
-    "CODE_OF_CONDUCT.md"
+    "docs/**/*"
   ],
   "engines": {
     "node": ">=24.0.0",
