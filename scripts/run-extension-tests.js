@@ -37,6 +37,7 @@ async function main() {
         "--skip-welcome",
         "--skip-release-notes",
         "--disable-workspace-trust",
+        "--disable-extensions",
         extensionDevelopmentPath
       ]
     });
